@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE ICT - Computer-Controlled Systems Quiz (20 MCQs)</title>
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #131d31;
+            --border-color: #223354;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        header h1 {
+            color: var(--accent);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .quiz-status {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .score-pill {
+            background-color: #0c4a6e;
+            color: #7dd3fc;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid #0284c7;
+        }
+
+        .card {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            background-color: #1e293b;
+            color: var(--text-main);
+            padding: 1rem 1.25rem;
+            border-radius: 0.85rem;
+            border: 1px solid #334155;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #283548;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: #064e3b !important;
+            border-color: #059669 !important;
+            color: #ecfdf5 !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: #7f1d1d !important;
+            border-color: #dc2626 !important;
+            color: #fee2e2 !important;
+        }
+
+        .feedback-box {
+            padding: 1.15rem;
+            border-radius: 0.85rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .feedback-box.correct-feedback {
+            background-color: #022c22;
+            border: 1px solid #047857;
+            color: #a7f3d0;
+        }
+
+        .feedback-box.incorrect-feedback {
+            background-color: #450a0a;
+            border: 1px solid #b91c1c;
+            color: #fecdd3;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: #0f172a;
+            font-weight: 700;
+            padding: 0.85rem 1.75rem;
+            border-radius: 0.85rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .results-card {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-card h2 {
+            font-size: 2.25rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .results-card p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>IGCSE ICT Practice Quiz</h1>
+        <p>Topics 6.3 & 6.3.1 Computer-Controlled Systems (Sensors, Microprocessors, Actuators)</p>
+    </header>
+
+    <main>
+        <div class="quiz-status">
+            <span id="question-counter">Question 1 of 20</span>
+            <span id="score-display" class="score-pill">Score: 0</span>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="card">
+            <div id="question-box" class="question-text">
+                Loading question...
+            </div>
+
+            <div id="options-container" class="options-list">
+                <!-- Options populated dynamically -->
+            </div>
+
+            <div id="feedback-box" class="feedback-box hidden">
+                <!-- Feedback populated dynamically -->
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+                <button id="next-btn" onclick="nextQuestion()" class="btn-primary hidden">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="card results-card hidden">
+            <h2>Quiz Completed! 🎉</h2>
+            <p id="final-score">You scored X out of 20</p>
+            <button onclick="restartQuiz()" class="btn-primary">Restart Quiz</button>
+        </div>
+    </main>
+
+    <footer>
+        IGCSE ICT Revision &bull; Computer-Controlled Systems
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                question: "What is a computer-controlled system?",
+                options: [
+                    { text: "A system where a microprocessor uses sensor inputs to monitor an environment and controls output actuators automatically without human intervention", isCorrect: true, rationale: "Computer-controlled systems use sensors, microprocessors, and actuators in an automated loop." },
+                    { text: "A manual typewriter operated by typing letters on mechanical keys", isCorrect: false, rationale: "Manual typewriters are unautomated office equipment." },
+                    { text: "A standalone computer used for playing offline video games", isCorrect: false, rationale: "Gaming is entertainment, not automated system control." },
+                    { text: "A storage hard disk drive spinning on a motor", isCorrect: false, rationale: "This describes magnetic storage media." }
+                ]
+            },
+            {
+                question: "What is the function of a sensor in a computer-controlled system?",
+                options: [
+                    { text: "To measure physical environmental quantities (such as temperature, light, or pressure) and convert them into analogue or digital signals", isCorrect: true, rationale: "Sensors act as the eyes and ears of a control system, detecting real-world physical changes." },
+                    { text: "To display visual images onto computer monitor screens", isCorrect: false, rationale: "Displays are output units, not environmental input sensors." },
+                    { text: "To print paper documents using ink cartridges", isCorrect: false, rationale: "This describes printers." },
+                    { text: "To project video presentations onto walls", isCorrect: false, rationale: "This describes multimedia projectors." }
+                ]
+            },
+            {
+                question: "Why is an Analogue-to-Digital Converter (ADC) required between sensors and a microprocessor?",
+                options: [
+                    { text: "Because physical sensors output continuous analogue electrical signals, whereas microprocessors can only process discrete digital binary data (1s and 0s)", isCorrect: true, rationale: "Microprocessors are digital devices and require ADCs to translate real-world analogue sensor readings into binary numbers." },
+                    { text: "To convert digital computer files into printed paper documents", isCorrect: false, rationale: "This is printing, not ADC conversion." },
+                    { text: "To burn pits onto optical CD-ROM discs", isCorrect: false, rationale: "This is optical media writing." },
+                    { text: "To supply continuous electrical mains power to motors", isCorrect: false, rationale: "Power is supplied by power supplies." }
+                ]
+            },
+            {
+                question: "What is the function of a Digital-to-Analogue Converter (DAC) in a computer-controlled system?",
+                options: [
+                    { text: "To convert digital control signals from a microprocessor into analogue signals needed to drive certain actuators (like heaters or motors)", isCorrect: true, rationale: "DACs translate digital computer commands into analogue voltage levels to operate physical output devices." },
+                    { text: "To convert analogue microphone sound waves into digital files", isCorrect: false, rationale: "This describes an Analogue-to-Digital Converter (ADC)." },
+                    { text: "To scan paper documents into digital image files", isCorrect: false, rationale: "This describes a flatbed scanner." },
+                    { text: "To format hard disk drive partitions", isCorrect: false, rationale: "This is disk formatting." }
+                ]
+            },
+            {
+                question: "What is the role of an actuator in a computer-controlled system?",
+                options: [
+                    { text: "An output device (such as a motor, heater, valve, or buzzer) that performs physical actions in response to signals from the microprocessor", isCorrect: true, rationale: "Actuators carry out the physical work in a control system based on microprocessor instructions." },
+                    { text: "An input device that detects room temperature", isCorrect: false, rationale: "Detecting temperature is the job of a temperature sensor, not an actuator." },
+                    { text: "A storage device for saving backup files", isCorrect: false, rationale: "This describes backing storage." },
+                    { text: "A wired network router forwarding data packets", isCorrect: true.split()[0] === 'false' && true, rationale: "Routers handle network traffic, not physical actuation." }
+                ]
+            },
+            {
+                question: "What is a feedback loop in a computer-controlled system?",
+                options: [
+                    { text: "A continuous cycle where sensor data is fed back to the microprocessor, which evaluates it against target conditions and adjusts actuators accordingly", isCorrect: true, rationale: "Feedback loops allow control systems to monitor outcomes and make ongoing adjustments automatically." },
+                    { text: "An electrical short circuit that causes system power failure", isCorrect: false, rationale: "A short circuit is a fault, whereas a feedback loop is an intentional control mechanism." },
+                    { text: "A loop in programming code that repeats infinitely without stopping", isCorrect: false, rationale: "This is an infinite programming loop, not system feedback." },
+                    { text: "A looping audio echo heard in microphone speakers", isCorrect: false, rationale: "This is acoustic audio feedback." }
+                ]
+            },
+            {
+                question: "What is the difference between a monitoring system and a control system?",
+                options: [
+                    { text: "A monitoring system only observes and records sensor data (triggering alerts if needed), whereas a control system actively alters the environment using actuators", isCorrect: true, rationale: "Monitoring systems watch and report; control systems actively change things using actuators." },
+                    { text: "A monitoring system uses microprocessors, while a control system uses manual levers", isCorrect: false, rationale: "Both use microprocessors; control systems specifically include actuators." },
+                    { text: "A monitoring system operates underwater, while a control system operates in space", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "There is no difference between them", isCorrect: false, rationale: "Their output actions differ significantly." }
+                ]
+            },
+            {
+                question: "How does an automated greenhouse temperature control system operate using a feedback loop?",
+                options: [
+                    { text: "A temperature sensor measures heat; if it falls below the target value, the microprocessor activates heating actuators; if too hot, ventilation fans are turned on", isCorrect: true, rationale: "The system monitors temperature continuously and adjusts heaters or coolers to maintain the desired set point." },
+                    { text: "The greenhouse prints out paper temperature reports every morning", isCorrect: false, rationale: "Greenhouse control involves climate regulation, not paper printing." },
+                    { text: "The greenhouse scans barcodes on plant pots", isCorrect: false, rationale: "This is retail inventory management." },
+                    { text: "The greenhouse plays music through audio speakers", isCorrect: false, rationale: "This is entertainment." }
+                ]
+            },
+            {
+                question: "What type of sensor would be used in an automatic street lighting system to turn lights on at dusk?",
+                options: [
+                    { text: "Light sensor (LDR - Light Dependent Resistor)", isCorrect: true, rationale: "Light sensors detect ambient daylight levels and signal the microprocessor to switch streetlights on when dark." },
+                    { text: "Temperature sensor", isCorrect: false, rationale: "Temperature measures heat, not ambient light." },
+                    { text: "Pressure sensor", isCorrect: false, rationale: "Pressure measures force, not light." },
+                    { text: "pH sensor", isCorrect: false, rationale: "pH measures chemical acidity/alkalinity." }
+                ]
+            },
+            {
+                question: "What type of sensor is required in an automatic central heating boiler to prevent overheating?",
+                options: [
+                    { text: "Temperature sensor (thermistor / thermocouple)", isCorrect: true, rationale: "Temperature sensors monitor boiler heat levels to ensure safe operating limits." },
+                    { text: "Light sensor", isCorrect: false, rationale: "Light sensors measure illumination, not heat." },
+                    { text: "Infrared motion sensor", isCorrect: false, rationale: "Motion sensors detect movement." },
+                    { text: "Magnetic field sensor", isCorrect: false, rationale: "This detects magnetism." }
+                ]
+            },
+            {
+                question: "What type of sensor would be used in an automated intruder alarm system to detect a person walking into a room?",
+                options: [
+                    { text: "Infrared motion sensor (PIR - Passive Infrared) or door contact sensor", isCorrect: true, rationale: "PIR sensors detect body heat and movement within protected rooms." },
+                    { text: "pH sensor", isCorrect: false, rationale: "pH measures liquid acidity." },
+                    { text: "Humidity sensor", isCorrect: false, rationale: "Humidity measures moisture in the air." },
+                    { text: "Light sensor", isCorrect: false, rationale: "Light sensors measure illumination." }
+                ]
+            },
+            {
+                question: "What type of sensor is used in an automatic washing machine to check the water level inside the drum?",
+                options: [
+                    { text: "Pressure sensor or water level float sensor", isCorrect: true, rationale: "Pressure sensors measure water depth and pressure to determine when the drum has filled correctly." },
+                    { text: "Light sensor", isCorrect: false, rationale: "Light sensors cannot measure water levels inside a dark drum." },
+                    { text: "pH sensor", isCorrect: false, rationale: "pH measures chemical acidity." },
+                    { text: "Infrared motion sensor", isCorrect: false, rationale: "Motion sensors detect movement, not water levels." }
+                ]
+            },
+            {
+                question: "What is an advantage of computer-controlled automated systems over human-operated systems in industrial manufacturing?",
+                options: [
+                    { text: "They can operate 24/7 without breaks, work in hazardous environments unsafe for humans, maintain consistent precision, and reduce labor costs", isCorrect: true, rationale: "Computers provide tireless, precise, and safe operation in dangerous industrial settings." },
+                    { text: "They require zero electrical power or maintenance", isCorrect: false, rationale: "Automated factory machines consume power and require servicing." },
+                    { text: "They make zero errors under all possible physical conditions", isCorrect: true.split()[0] === 'false' && true, rationale: "While highly consistent, systems can still experience hardware or programming faults." },
+                    { text: "They eliminate the need for computer programmers", isCorrect: false, rationale: "Programmers are needed to write and maintain control software." }
+                ]
+            },
+            {
+                question: "What is a disadvantage or risk of using computer-controlled systems in critical applications (like nuclear power plants or aviation)?",
+                options: [
+                    { text: "System failure due to software bugs, power outages, or sensor malfunctions can lead to catastrophic accidents or disasters", isCorrect: true.split()[0] === 'false' && true, rationale: "Reliance on complex software and hardware creates risks if faults occur in safety-critical systems." },
+                    { text: "Computers work too slowly to process real-world data", isCorrect: false, rationale: "Computers process data at millions of instructions per second." },
+                    { text: "Automated systems cannot connect to actuators", isCorrect: false, rationale: "They connect to actuators constantly." },
+                    { text: "Computers require manual human supervision every second", isCorrect: false, rationale: "The primary purpose of automation is operating without constant human supervision." }
+                ]
+            },
+            {
+                question: "Why do computer-controlled systems sample sensor data at regular intervals rather than continuously?",
+                options: [
+                    { text: "Microprocessors process instructions sequentially; sampling at intervals provides sufficient data updates for environmental control while conserving processing resources", isCorrect: true, rationale: "Interval sampling balances adequate responsiveness with efficient CPU workload management." },
+                    { text: "Because sensors break permanently if read continuously", isCorrect: false, rationale: "Sensors do not break from continuous reading." },
+                    { text: "Because computers cannot process continuous data streams", isCorrect: true.split()[0] === 'false' && true, rationale: "Computers can process continuous streams, but sampling is standard for discrete control loops." },
+                    { text: "To make the system run slower on purpose", isCorrect: false, rationale: "Speed and efficiency are key goals." }
+                ]
+            },
+            {
+                question: "What is the role of a microprocessor's stored program (firmware/software) in a control system?",
+                options: [
+                    { text: "It contains the control rules and instructions that tell the microprocessor how to compare sensor readings against preset target values and what actuator actions to take", isCorrect: true, rationale: "The stored program provides the logical instructions governing the control system's automated decisions." },
+                    { text: "It acts as a physical power generator supplying electricity", isCorrect: false, rationale: "Power is supplied by electrical power supplies." },
+                    { text: "It prints out paper instruction manuals for users", isCorrect: false, rationale: "Programs do not print manuals." },
+                    { text: "It stores permanent multi-terabyte cloud backups", isCorrect: false, rationale: "This describes enterprise cloud storage." }
+                ]
+            },
+            {
+                question: "How does an automated burglar alarm system decide when to trigger a siren?",
+                options: [
+                    { text: "If the microprocessor detects an active signal from a motion or door sensor while the alarm is armed, it sends a signal to activate the sounder actuator", isCorrect: true, rationale: "The microprocessor evaluates sensor inputs against security state logic and triggers actuators if a breach occurs." },
+                    { text: "It triggers the siren randomly every 10 minutes", isCorrect: false, rationale: "Alarms trigger based on sensor input breaches, not randomly." },
+                    { text: "It triggers the siren when the room temperature rises by 1 degree", isCorrect: false, rationale: "Burglary alarms respond to motion or intrusion sensors, not routine room heat." },
+                    { text: "It triggers the siren when the printer runs out of ink", isCorrect: false, rationale: "This is unrelated." }
+                ]
+            },
+            {
+                question: "What is open-loop control compared to closed-loop (feedback) control?",
+                options: [
+                    { text: "An open-loop system operates without feedback from sensors (it executes instructions regardless of the output result), whereas closed-loop systems use feedback to adjust actions", isCorrect: true, rationale: "Open-loop systems (like washing machine timers) lack sensors to check results, whereas closed-loop systems adjust based on sensor feedback." },
+                    { text: "An open-loop system uses Wi-Fi, while a closed-loop system uses Bluetooth", isCorrect: false, rationale: "Wireless protocols do not define control loop types." },
+                    { text: "An open-loop system is underwater, while a closed-loop system is in space", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "There is no difference between them", isCorrect: false, rationale: "The presence or absence of sensor feedback is the fundamental difference." }
+                ]
+            },
+            {
+                question: "What is an example of an open-loop computer-controlled system?",
+                options: [
+                    { text: "An automatic microwave oven set to heat food for exactly 2 minutes without checking food temperature with a sensor", isCorrect: true, rationale: "Timed microwaves run for a set duration without monitoring food temperature feedback during the cycle." },
+                    { text: "A central heating thermostat maintaining exact room temperature", isCorrect: false, rationale: "Thermostats use feedback loops to maintain room temperature, making them closed-loop." },
+                    { text: "An automated greenhouse cooling and heating climate system", isCorrect: false, rationale: "This is a closed-loop feedback system." },
+                    { text: "An ABS braking system adjusting wheel slip in real-time", isCorrect: false, rationale: "This uses continuous sensor feedback." }
+                ]
+            },
+            {
+                question: "Which summary best encapsulates computer-controlled systems (6.3 / 6.3.1) in IGCSE ICT?",
+                options: [
+                    { text: "Computer-controlled systems use input sensors, ADCs, microprocessors running stored programs, DACs, and output actuators in feedback loops to monitor and automate real-world environments", isCorrect: true, rationale: "Computer-controlled systems integrate sensors, microprocessors, and actuators into automated feedback loops for precise environmental control." },
+                    { text: "Computer-controlled systems are manual office machines used exclusively for typing letters", isCorrect: false, rationale: "This describes manual typewriters." },
+                    { text: "Computer-controlled systems rely solely on human operators pulling physical levers", isCorrect: false, rationale: "The core purpose of these systems is automated control without constant human intervention." },
+                    { text: "Computer-controlled systems are optical disc storage media formats", isCorrect: false, rationale: "Optical media is storage, not automated control." }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionCounter = document.getElementById("question-counter");
+        const scoreDisplay = document.getElementById("score-display");
+        const questionBox = document.getElementById("question-box");
+        const optionsContainer = document.getElementById("options-container");
+        const feedbackBox = document.getElementById("feedback-box");
+        const nextBtn = document.getElementById("next-btn");
+        const quizContainer = document.getElementById("quiz-container");
+        const resultsContainer = document.getElementById("results-container");
+        const finalScore = document.getElementById("final-score");
+
+        function loadQuestion() {
+            answered = false;
+            feedbackBox.classList.add("hidden");
+            nextBtn.classList.add("hidden");
+            
+            const q = questions[currentQuestionIndex];
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            scoreDisplay.textContent = `Score: ${score}`;
+            questionBox.textContent = q.question;
+
+            // Shuffle options array randomly so correct answer is not always first
+            let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            optionsContainer.innerHTML = "";
+            shuffledOptions.forEach((opt) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.textContent = opt.text;
+                btn.onclick = () => selectOption(opt, shuffledOptions);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedOpt, shuffledOptions) {
+            if (answered) return;
+            answered = true;
+
+            const allOptionButtons = optionsContainer.children;
+
+            shuffledOptions.forEach((opt, idx) => {
+                allOptionButtons[idx].disabled = true;
+                if (opt.isCorrect) {
+                    allOptionButtons[idx].classList.add("correct");
+                } else if (opt === selectedOpt && !selectedOpt.isCorrect) {
+                    allOptionButtons[idx].classList.add("incorrect");
+                }
+            });
+
+            feedbackBox.classList.remove("hidden");
+            if (selectedOpt.isCorrect) {
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+                feedbackBox.className = "feedback-box correct-feedback";
+                feedbackBox.innerHTML = `<strong>Correct!</strong> ${selectedOpt.rationale}`;
+            } else {
+                feedbackBox.className = "feedback-box incorrect-feedback";
+                feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${selectedOpt.rationale}`;
+            }
+
+            if (currentQuestionIndex < questions.length - 1) {
+                nextBtn.textContent = "Next Question";
+            } else {
+                nextBtn.textContent = "View Results";
+            }
+            nextBtn.classList.remove("hidden");
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                quizContainer.classList.add("hidden");
+                resultsContainer.classList.remove("hidden");
+                finalScore.textContent = `You scored ${score} out of ${questions.length}`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            resultsContainer.classList.add("hidden");
+            quizContainer.classList.remove("hidden");
+            loadQuestion();
+        }
+
+        // Initialize quiz on load
+        loadQuestion();
+    </script>
+</body>
+</html>
