@@ -300,7 +300,7 @@
                     { text: "An output device (such as a motor, heater, valve, or buzzer) that performs physical actions in response to signals from the microprocessor", isCorrect: true, rationale: "Actuators carry out the physical work in a control system based on microprocessor instructions." },
                     { text: "An input device that detects room temperature", isCorrect: false, rationale: "Detecting temperature is the job of a temperature sensor, not an actuator." },
                     { text: "A storage device for saving backup files", isCorrect: false, rationale: "This describes backing storage." },
-                    { text: "A wired network router forwarding data packets", isCorrect: true.split()[0] === 'false' && true, rationale: "Routers handle network traffic, not physical actuation." }
+                    { text: "A wired network router forwarding data packets", isCorrect: false, rationale: "Routers handle network traffic, not physical actuation." }
                 ]
             },
             {
@@ -371,14 +371,14 @@
                 options: [
                     { text: "They can operate 24/7 without breaks, work in hazardous environments unsafe for humans, maintain consistent precision, and reduce labor costs", isCorrect: true, rationale: "Computers provide tireless, precise, and safe operation in dangerous industrial settings." },
                     { text: "They require zero electrical power or maintenance", isCorrect: false, rationale: "Automated factory machines consume power and require servicing." },
-                    { text: "They make zero errors under all possible physical conditions", isCorrect: true.split()[0] === 'false' && true, rationale: "While highly consistent, systems can still experience hardware or programming faults." },
+                    { text: "They make zero errors under all possible physical conditions", isCorrect: false, rationale: "While highly consistent, systems can still experience hardware or programming faults." },
                     { text: "They eliminate the need for computer programmers", isCorrect: false, rationale: "Programmers are needed to write and maintain control software." }
                 ]
             },
             {
                 question: "What is a disadvantage or risk of using computer-controlled systems in critical applications (like nuclear power plants or aviation)?",
                 options: [
-                    { text: "System failure due to software bugs, power outages, or sensor malfunctions can lead to catastrophic accidents or disasters", isCorrect: true.split()[0] === 'false' && true, rationale: "Reliance on complex software and hardware creates risks if faults occur in safety-critical systems." },
+                    { text: "System failure due to software bugs, power outages, or sensor malfunctions can lead to catastrophic accidents or disasters", isCorrect: true, rationale: "Reliance on complex software and hardware creates risks if faults occur in safety-critical systems." },
                     { text: "Computers work too slowly to process real-world data", isCorrect: false, rationale: "Computers process data at millions of instructions per second." },
                     { text: "Automated systems cannot connect to actuators", isCorrect: false, rationale: "They connect to actuators constantly." },
                     { text: "Computers require manual human supervision every second", isCorrect: false, rationale: "The primary purpose of automation is operating without constant human supervision." }
@@ -389,7 +389,7 @@
                 options: [
                     { text: "Microprocessors process instructions sequentially; sampling at intervals provides sufficient data updates for environmental control while conserving processing resources", isCorrect: true, rationale: "Interval sampling balances adequate responsiveness with efficient CPU workload management." },
                     { text: "Because sensors break permanently if read continuously", isCorrect: false, rationale: "Sensors do not break from continuous reading." },
-                    { text: "Because computers cannot process continuous data streams", isCorrect: true.split()[0] === 'false' && true, rationale: "Computers can process continuous streams, but sampling is standard for discrete control loops." },
+                    { text: "Because computers cannot process continuous data streams", isCorrect: false, rationale: "Computers can process continuous streams, but sampling is standard for discrete control loops." },
                     { text: "To make the system run slower on purpose", isCorrect: false, rationale: "Speed and efficiency are key goals." }
                 ]
             },
@@ -454,6 +454,19 @@
         const resultsContainer = document.getElementById("results-container");
         const finalScore = document.getElementById("final-score");
 
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // Shuffle questions order on load
+        shuffleArray(questions);
+
         function loadQuestion() {
             answered = false;
             feedbackBox.classList.add("hidden");
@@ -465,7 +478,8 @@
             questionBox.textContent = q.question;
 
             // Shuffle options array randomly so correct answer is not always first
-            let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+            let shuffledOptions = [...q.options];
+            shuffleArray(shuffledOptions);
 
             optionsContainer.innerHTML = "";
             shuffledOptions.forEach((opt) => {
@@ -497,10 +511,11 @@
                 score++;
                 scoreDisplay.textContent = `Score: ${score}`;
                 feedbackBox.className = "feedback-box correct-feedback";
-                feedbackBox.innerHTML = `<strong>Correct!</strong> ${selectedOpt.rationale}`;
+                feedbackBox.innerHTML = `<strong>Correct! 🎉</strong> ${selectedOpt.rationale}`;
             } else {
                 feedbackBox.className = "feedback-box incorrect-feedback";
-                feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${selectedOpt.rationale}`;
+                const correctOpt = questions[currentQuestionIndex].options.find(o => o.isCorrect);
+                feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${selectedOpt.rationale}<br><br><em>Correct answer:</em> ${correctOpt.text}`;
             }
 
             if (currentQuestionIndex < questions.length - 1) {
@@ -525,6 +540,7 @@
         function restartQuiz() {
             currentQuestionIndex = 0;
             score = 0;
+            shuffleArray(questions);
             resultsContainer.classList.add("hidden");
             quizContainer.classList.remove("hidden");
             loadQuestion();
